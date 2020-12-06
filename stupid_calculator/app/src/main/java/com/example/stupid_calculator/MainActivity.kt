@@ -117,7 +117,13 @@ class MainActivity : AppCompatActivity() {
             return ""
         }
 
-        inputText.text = result
+        inputText.text = roundIfNecessary(result)
+        return result
+    }
+
+    private fun roundIfNecessary(result: String): String {
+        if (result.endsWith(".0"))
+            return result.substring(0, result.length -2)
         return result
     }
 
