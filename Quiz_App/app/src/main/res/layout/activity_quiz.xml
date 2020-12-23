@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:fillViewport="true"
+    tools:context=".QuizActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:weightSum="10">
+
+        <TextView android:id="@+id/questionTV"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="@string/question"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <ImageView android:id="@+id/imageIV"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="50dp"
+            android:adjustViewBounds="true"
+            android:maxHeight="700dp"
+            android:src="@drawable/albert_einstein" />
+
+        <ProgressBar android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:progress="@android:integer/config_longAnimTime"
+            android:layout_weight="1" />
+
+        <Button android:id="@+id/firstAnswer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/lightGray"
+            android:textColor="@color/black"
+            android:text="@string/first_answer" />
+
+        <Button android:id="@+id/secondAnswer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/lightGray"
+            android:textColor="@color/black"
+            android:text="@string/second_answer" />
+
+        <Button android:id="@+id/thirdAnswer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/lightGray"
+            android:textColor="@color/black"
+            android:text="@string/third_answer" />
+
+        <Button android:id="@+id/fourthAnswer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/lightGray"
+            android:textColor="@color/black"
+            android:text="@string/fourth_answer" />
+
+        <Button android:id="@+id/submitButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/primaryColorLight"
+            android:text="@string/submit_text" />
+
+    </LinearLayout>
+
+</ScrollView>
