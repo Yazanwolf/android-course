@@ -53,32 +53,35 @@ class QuizActivity : AppCompatActivity() {
         val correctOption = allQuestions.get(currentQuestion -1).correctOption
         if (correctOption == chosenAnswer) {
             when (chosenAnswer) {
-                1 -> firstAnswer.text = firstAnswer.text.toString() + " CORRECCT"
-                2 -> secondAnswer.text = secondAnswer.text.toString() + " CORRECCT"
-                3 -> thirdAnswer.text = thirdAnswer.text.toString() + " CORRECCT"
-                4 -> fourthAnswer.text = fourthAnswer.text.toString() + " CORRECCT"
+                1 -> firstAnswer.background = ContextCompat.getDrawable(this, R.drawable.correct_answer_shape)
+                2 -> secondAnswer.background = ContextCompat.getDrawable(this, R.drawable.correct_answer_shape)
+                3 -> thirdAnswer.background = ContextCompat.getDrawable(this, R.drawable.correct_answer_shape)
+                4 -> fourthAnswer.background = ContextCompat.getDrawable(this, R.drawable.correct_answer_shape)
             }
             submitButton.text = "Next Question"
             submitButton.setOnClickListener {
-                onNextQuestion()
+                onNextQuestionClicked()
             }
         } else {
             when (chosenAnswer) {
-//                1 -> firstAnswer.background = ContextCompat.getDrawable(this, R.drawable.right_answer_background)
-                1 -> firstAnswer.text = firstAnswer.text.toString() + " WRONG"
-                2 -> secondAnswer.text = secondAnswer.text.toString() + " WRONG"
-                3 -> thirdAnswer.text = thirdAnswer.text.toString() + " WRONG"
-                4 -> fourthAnswer.text = fourthAnswer.text.toString() + " WRONG"
+                1 -> firstAnswer.background = ContextCompat.getDrawable(this, R.drawable.wrong_answer_shape)
+                2 -> secondAnswer.background = ContextCompat.getDrawable(this, R.drawable.wrong_answer_shape)
+                3 -> thirdAnswer.background = ContextCompat.getDrawable(this, R.drawable.wrong_answer_shape)
+                4 -> fourthAnswer.background = ContextCompat.getDrawable(this, R.drawable.wrong_answer_shape)
             }
         }
     }
 
-    private fun onNextQuestion() {
+    private fun onNextQuestionClicked() {
         chosenAnswer = 0
         currentQuestion++
         viewQuestion()
         submitButton.setText(R.string.submit_text)
         submitButton.setOnClickListener{onSubmitClicked()}
+        firstAnswer.background = ContextCompat.getDrawable(this, R.drawable.default_answer_background)
+        secondAnswer.background = ContextCompat.getDrawable(this, R.drawable.default_answer_background)
+        thirdAnswer.background = ContextCompat.getDrawable(this, R.drawable.default_answer_background)
+        fourthAnswer.background = ContextCompat.getDrawable(this, R.drawable.default_answer_background)
     }
 
     private fun viewQuestion() {
