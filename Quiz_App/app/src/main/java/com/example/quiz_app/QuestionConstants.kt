@@ -51,7 +51,7 @@ object QuestionConstants {
             R.drawable.galileo_galilei,
             "Who is the first person to publish the theory of the earth moving around the sun?",
             createListOf("Marco Polo", "Ferdinand Magellan", "Socrates", "Galileo Galilei"),
-            2
+            4
         )
 
         val question7 = Question(
@@ -73,8 +73,8 @@ object QuestionConstants {
         val question9 = Question(
             9,
             R.drawable.leonardo_dicaprio,
-            "In which movie die Leonardo DiCaprio win the Oscar?",
-            createListOf("36", "64", "35", "81"),
+            "For which movie die Leonardo DiCaprio win the Oscar?",
+            createListOf("Titanic", "The Revenant", "Inception", "Wolf of Wallstreet"),
             2
         )
 
