@@ -2,46 +2,70 @@ package com.example.quiz_app
 
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View
+import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import kotlinx.android.synthetic.main.activity_quiz.*
 
-class QuizActivity : AppCompatActivity() {
+class QuizActivity : AppCompatActivity(), View.OnClickListener {
     val allQuestions = QuestionConstants.getQuestions()
     var currentQuestion = 1
     var chosenAnswer = 0
+    var correctAnswers = 0
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz)
+        initObjects()
         viewQuestion()
+    }
 
-        firstAnswer.setOnClickListener { view ->
-            Toast.makeText(view.context, "First answer is chosen", Toast.LENGTH_SHORT).show()
-            chosenAnswer = 1
-        }
+    private fun initObjects() {
+        firstAnswer.setOnClickListener(this)
+        secondAnswer.setOnClickListener(this)
+        thirdAnswer.setOnClickListener(this)
+        fourthAnswer.setOnClickListener(this)
+        submitButton.setOnClickListener(this)
+    }
 
-        secondAnswer.setOnClickListener { view ->
-            Toast.makeText(view.context, "Second answer is chosen", Toast.LENGTH_SHORT).show()
-            chosenAnswer = 2
-        }
+    private fun viewQuestion() {
+        val question = allQuestions[currentQuestion - 1]
+        questionTV.text = question.question
+        imageIV.setImageResource(question.picture)
+        progressBar.progress = currentQuestion
+        progressInNumber.text = currentQuestion.toString()
 
-        thirdAnswer.setOnClickListener { view ->
-            Toast.makeText(view.context, "Third answer is chosen", Toast.LENGTH_SHORT).show()
-            chosenAnswer = 3
-        }
+        firstAnswer.text = question.options[0]
+        secondAnswer.text = question.options[1]
+        thirdAnswer.text = question.options[2]
+        fourthAnswer.text = question.options[3]
+    }
 
-        fourthAnswer.setOnClickListener { view ->
-            Toast.makeText(view.context, "Fourth answer is chosen", Toast.LENGTH_SHORT).show()
-            chosenAnswer = 4
-        }
-
-        submitButton.setOnClickListener { view ->
-            onSubmitClicked()
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.firstAnswer -> {
+                setAnswerViewSelected(firstAnswer)
+                chosenAnswer = 1
+            }
+            R.id.secondAnswer -> {
+                setAnswerViewSelected(secondAnswer)
+                chosenAnswer = 2
+            }
+            R.id.thirdAnswer -> {
+                setAnswerViewSelected(thirdAnswer)
+                chosenAnswer = 3
+            }
+            R.id.fourthAnswer -> {
+                setAnswerViewSelected(fourthAnswer)
+                chosenAnswer = 4
+            }
+            R.id.submitButton -> {
+                onSubmitClicked()
+            }
         }
     }
 
@@ -50,52 +74,155 @@ class QuizActivity : AppCompatActivity() {
             return
         }
 
-        val correctOption = allQuestions.get(currentQuestion -1).correctOption
+        disableAllAnswers()
+
+        val correctOption = allQuestions[currentQuestion - 1].correctOption
         if (correctOption == chosenAnswer) {
+            correctAnswers++
             when (chosenAnswer) {
-                1 -> firstAnswer.background = ContextCompat.getDrawable(this, R.drawable.correct_answer_shape)
-                2 -> secondAnswer.background = ContextCompat.getDrawable(this, R.drawable.correct_answer_shape)
-                3 -> thirdAnswer.background = ContextCompat.getDrawable(this, R.drawable.correct_answer_shape)
-                4 -> fourthAnswer.background = ContextCompat.getDrawable(this, R.drawable.correct_answer_shape)
+                1 -> setAnswerViewCorrect(firstAnswer)
+                2 -> setAnswerViewCorrect(secondAnswer)
+                3 -> setAnswerViewCorrect(thirdAnswer)
+                4 -> setAnswerViewCorrect(fourthAnswer)
             }
-            submitButton.text = "Next Question"
-            submitButton.setOnClickListener {
-                onNextQuestionClicked()
+            if (currentQuestion == allQuestions.size) {
+                showFinishButton()
+                return
             }
         } else {
             when (chosenAnswer) {
-                1 -> firstAnswer.background = ContextCompat.getDrawable(this, R.drawable.wrong_answer_shape)
-                2 -> secondAnswer.background = ContextCompat.getDrawable(this, R.drawable.wrong_answer_shape)
-                3 -> thirdAnswer.background = ContextCompat.getDrawable(this, R.drawable.wrong_answer_shape)
-                4 -> fourthAnswer.background = ContextCompat.getDrawable(this, R.drawable.wrong_answer_shape)
+                1 -> setAnswerViewWrong(firstAnswer)
+                2 -> setAnswerViewWrong(secondAnswer)
+                3 -> setAnswerViewWrong(thirdAnswer)
+                4 -> setAnswerViewWrong(fourthAnswer)
+            }
+            when (correctOption) {
+                1 -> setAnswerViewCorrect(firstAnswer)
+                2 -> setAnswerViewCorrect(secondAnswer)
+                3 -> setAnswerViewCorrect(thirdAnswer)
+                4 -> setAnswerViewCorrect(fourthAnswer)
             }
         }
+        showNextAnswerButton()
+    }
+
+    private fun disableAllAnswers() {
+        firstAnswer.isEnabled = false
+        secondAnswer.isEnabled = false
+        thirdAnswer.isEnabled = false
+        fourthAnswer.isEnabled = false
+    }
+
+    private fun enableAllAnswers() {
+        firstAnswer.isEnabled = true
+        secondAnswer.isEnabled = true
+        thirdAnswer.isEnabled = true
+        fourthAnswer.isEnabled = true
     }
 
     private fun onNextQuestionClicked() {
         chosenAnswer = 0
         currentQuestion++
         viewQuestion()
-        submitButton.setText(R.string.submit_text)
-        submitButton.setOnClickListener{onSubmitClicked()}
-        firstAnswer.background = ContextCompat.getDrawable(this, R.drawable.default_answer_background)
-        secondAnswer.background = ContextCompat.getDrawable(this, R.drawable.default_answer_background)
-        thirdAnswer.background = ContextCompat.getDrawable(this, R.drawable.default_answer_background)
-        fourthAnswer.background = ContextCompat.getDrawable(this, R.drawable.default_answer_background)
+        enableAllAnswers()
+        resetAnswersToDefaultView()
+        showSubmitButton()
     }
 
-    private fun viewQuestion() {
+    private fun onFinishClicked() {
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setTitle(R.string.Congratulations_text)
+        dialogBuilder.setMessage(getString(R.string.result_text, correctAnswers, allQuestions.size))
+        dialogBuilder.setPositiveButton(R.string.play_again) { _, _ ->
+            currentQuestion = 1
+            chosenAnswer = 0
+            correctAnswers = 0
+            resetAnswersToDefaultView()
+            enableAllAnswers()
+            showSubmitButton()
+            viewQuestion()
+        }
+        dialogBuilder.setNegativeButton(R.string.exit_quiz) { _, _ ->
+            finish()
+        }
+        val resultDialog = dialogBuilder.create()
+        resultDialog.show()
+    }
 
-        val question = allQuestions[currentQuestion - 1]
-        questionTV.text = question.question
-        imageIV.setImageResource(question.picture)
-        progressBar.progress = 5
+    private fun resetAnswersToDefaultView() {
+        setAnswerViewDefault(firstAnswer)
+        setAnswerViewDefault(secondAnswer)
+        setAnswerViewDefault(thirdAnswer)
+        setAnswerViewDefault(fourthAnswer)
+    }
 
-        firstAnswer.text = question.options[0]
-        secondAnswer.text = question.options[1]
-        thirdAnswer.text = question.options[2]
-        fourthAnswer.text = question.options[3]
+    private fun setAnswerViewDefault(v: TextView) {
+        v.background = ResourcesCompat.getDrawable(
+            resources,
+            R.drawable.default_answer_background,
+            theme
+        )
+    }
 
+    private fun setAnswerViewSelected(v: TextView) {
+        resetAnswersToDefaultView()
+        v.background = ResourcesCompat.getDrawable(
+            resources,
+            R.drawable.selected_answer_shape,
+            theme
+        )
+    }
+
+    private fun setAnswerViewCorrect(v: TextView) {
+        v.background = ResourcesCompat.getDrawable(
+            resources,
+            R.drawable.correct_answer_shape,
+            theme
+        )
+    }
+
+    private fun setAnswerViewWrong(v: TextView) {
+        v.background = ResourcesCompat.getDrawable(
+            resources,
+            R.drawable.wrong_answer_shape,
+            theme
+        )
+    }
+
+    private fun showNextAnswerButton() {
+        submitButton.text = resources.getString(R.string.next_question_text)
+        submitButton.background = ResourcesCompat.getDrawable(
+            resources,
+            R.drawable.next_question_shape,
+            theme
+        )
+        submitButton.setOnClickListener {
+            onNextQuestionClicked()
+        }
+    }
+
+    private fun showSubmitButton() {
+        submitButton.text = resources.getString(R.string.submit_text)
+        submitButton.background = ResourcesCompat.getDrawable(
+            resources,
+            R.drawable.submit_button_shape,
+            theme
+        )
+        submitButton.setOnClickListener {
+            onSubmitClicked()
+        }
+    }
+
+    private fun showFinishButton() {
+        submitButton.text = resources.getString(R.string.finish_text)
+        submitButton.background = ResourcesCompat.getDrawable(
+            resources,
+            R.drawable.next_question_shape,
+            theme
+        )
+        submitButton.setOnClickListener {
+            onFinishClicked()
+        }
     }
 
 }
