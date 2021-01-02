@@ -1,6 +1,10 @@
 package com.example.quiz_app
 
-object QuestionConstants {
+object Constants {
+
+    const val PLAYER_NAME = "PLAYER NAME"
+    const val CORRECT_ANSWERS_NUMBER = "CORRECT ANSWERS NUMBER"
+    const val NUMBER_OF_ALL_QUESTIONS = "NUMBER OF ALL QUESTIONS"
 
     fun getQuestions(): ArrayList<Question> {
 

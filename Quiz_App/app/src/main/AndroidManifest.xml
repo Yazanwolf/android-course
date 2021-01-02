@@ -15,6 +15,11 @@
             android:theme="@style/Theme.Design">
         </activity>
         <activity
+            android:name=".ResultActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Design">
+        </activity>
+        <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"

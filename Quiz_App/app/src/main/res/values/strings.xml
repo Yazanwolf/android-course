@@ -12,8 +12,9 @@
     <string name="submit_text">Submit</string>
     <string name="next_question_text">Next Question</string>
     <string name="finish_text">Finish</string>
-    <string name="Congratulations_text">Congratulations!</string>
+    <string name="Congratulations_text">Congratulations %1$s!</string>
     <string name="result_text">You answered %1$d out of %2$d questions correctly!</string>
     <string name="play_again">Play again!</string>
     <string name="exit_quiz">Exit</string>
+    <string name="result">Result</string>
 </resources>

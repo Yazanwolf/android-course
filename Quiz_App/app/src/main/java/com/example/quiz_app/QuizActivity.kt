@@ -1,25 +1,31 @@
 package com.example.quiz_app
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import com.example.quiz_app.Constants.CORRECT_ANSWERS_NUMBER
+import com.example.quiz_app.Constants.NUMBER_OF_ALL_QUESTIONS
+import com.example.quiz_app.Constants.PLAYER_NAME
 import kotlinx.android.synthetic.main.activity_quiz.*
 
 class QuizActivity : AppCompatActivity(), View.OnClickListener {
-    val allQuestions = QuestionConstants.getQuestions()
+    val allQuestions = Constants.getQuestions()
     var currentQuestion = 1
     var chosenAnswer = 0
     var correctAnswers = 0
+    var playerName = ""
+
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz)
+        playerName = intent.getStringExtra(PLAYER_NAME).toString()
         initObjects()
         viewQuestion()
     }
@@ -73,22 +79,18 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
         if (chosenAnswer == 0) {
             return
         }
-
         disableAllAnswers()
 
         val correctOption = allQuestions[currentQuestion - 1].correctOption
+        when (correctOption) {
+            1 -> setAnswerViewCorrect(firstAnswer)
+            2 -> setAnswerViewCorrect(secondAnswer)
+            3 -> setAnswerViewCorrect(thirdAnswer)
+            4 -> setAnswerViewCorrect(fourthAnswer)
+        }
+
         if (correctOption == chosenAnswer) {
             correctAnswers++
-            when (chosenAnswer) {
-                1 -> setAnswerViewCorrect(firstAnswer)
-                2 -> setAnswerViewCorrect(secondAnswer)
-                3 -> setAnswerViewCorrect(thirdAnswer)
-                4 -> setAnswerViewCorrect(fourthAnswer)
-            }
-            if (currentQuestion == allQuestions.size) {
-                showFinishButton()
-                return
-            }
         } else {
             when (chosenAnswer) {
                 1 -> setAnswerViewWrong(firstAnswer)
@@ -96,12 +98,11 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
                 3 -> setAnswerViewWrong(thirdAnswer)
                 4 -> setAnswerViewWrong(fourthAnswer)
             }
-            when (correctOption) {
-                1 -> setAnswerViewCorrect(firstAnswer)
-                2 -> setAnswerViewCorrect(secondAnswer)
-                3 -> setAnswerViewCorrect(thirdAnswer)
-                4 -> setAnswerViewCorrect(fourthAnswer)
-            }
+        }
+
+        if (currentQuestion == allQuestions.size) {
+            showFinishButton()
+            return
         }
         showNextAnswerButton()
     }
@@ -130,23 +131,12 @@ class QuizActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun onFinishClicked() {
-        val dialogBuilder = AlertDialog.Builder(this)
-        dialogBuilder.setTitle(R.string.Congratulations_text)
-        dialogBuilder.setMessage(getString(R.string.result_text, correctAnswers, allQuestions.size))
-        dialogBuilder.setPositiveButton(R.string.play_again) { _, _ ->
-            currentQuestion = 1
-            chosenAnswer = 0
-            correctAnswers = 0
-            resetAnswersToDefaultView()
-            enableAllAnswers()
-            showSubmitButton()
-            viewQuestion()
-        }
-        dialogBuilder.setNegativeButton(R.string.exit_quiz) { _, _ ->
-            finish()
-        }
-        val resultDialog = dialogBuilder.create()
-        resultDialog.show()
+        val intent = Intent(this, ResultActivity::class.java)
+        intent.putExtra(CORRECT_ANSWERS_NUMBER, correctAnswers)
+        intent.putExtra(NUMBER_OF_ALL_QUESTIONS, allQuestions.size)
+        intent.putExtra(PLAYER_NAME, playerName)
+        startActivity(intent)
+        finish()
     }
 
     private fun resetAnswersToDefaultView() {
